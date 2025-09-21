@@ -161,6 +161,12 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--space-3);
+            }
+        }
+
         .sr-only {
             position: absolute;
             width: 1px;
@@ -380,7 +386,7 @@
             transition: width 0.3s ease;
         }
 
-        /* Mobile Navigation */
+        /* Mobile Navigation - Improved */
         @media (max-width: 768px) {
             .nav-menu {
                 position: fixed;
@@ -394,6 +400,7 @@
                 visibility: hidden;
                 transition: var(--transition-normal);
                 padding: var(--space-6);
+                z-index: 999;
             }
 
             .nav-menu.active {
@@ -413,10 +420,20 @@
                 border-radius: var(--radius-md);
                 text-align: center;
                 background: var(--bg-secondary);
+                display: block;
+                font-size: var(--text-lg);
             }
 
             .nav-toggle {
                 display: flex;
+            }
+
+            .brand-title {
+                font-size: var(--text-xl);
+            }
+
+            .brand-subtitle {
+                font-size: var(--text-xs);
             }
         }
 
@@ -486,6 +503,24 @@
             padding: var(--space-2) var(--space-4);
             border-radius: var(--radius-full);
             margin-bottom: var(--space-4);
+            font-size: var(--text-sm);
+        }
+
+        @media (max-width: 768px) {
+            .hero-badge {
+                font-size: var(--text-xs);
+                padding: var(--space-2) var(--space-3);
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-badge {
+                font-size: var(--text-xs);
+                padding: var(--space-1) var(--space-3);
+                margin-bottom: var(--space-3);
+            }
         }
 
         .hero-title {
@@ -494,6 +529,21 @@
             line-height: 1.02;
             margin: var(--space-6) 0;
             color: var(--gray-900);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: clamp(1.5rem, 6vw, 2.5rem);
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: clamp(1.3rem, 8vw, 2rem);
+                line-height: 1.1;
+                margin: var(--space-4) 0;
+            }
         }
 
         .hero-title .highlight {
@@ -508,6 +558,26 @@
             font-size: var(--text-lg);
             margin-bottom: var(--space-8);
             max-width: 600px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .hero-description {
+                font-size: var(--text-base);
+                margin-bottom: var(--space-6);
+                max-width: 100%;
+                line-height: 1.7;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-description {
+                font-size: var(--text-sm);
+                margin-bottom: var(--space-4);
+                line-height: 1.8;
+                padding: 0 var(--space-2);
+            }
         }
 
         .hero-stats {
@@ -605,6 +675,26 @@
             .hero-stats {
                 flex-wrap: wrap;
                 justify-content: center;
+                gap: var(--space-4);
+            }
+
+            .stat-item {
+                min-width: 100px;
+                flex: 1;
+                max-width: 140px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-stats {
+                flex-direction: column;
+                align-items: center;
+                gap: var(--space-3);
+            }
+
+            .stat-item {
+                width: 100%;
+                max-width: 200px;
             }
         }
 
@@ -757,6 +847,19 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: var(--space-8);
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .projects-grid {
+                gap: var(--space-4);
+            }
         }
 
         .project-card {
