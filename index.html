@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Student Equity Leader Club</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -117,6 +117,18 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             overflow-x: hidden;
+            width: 100%;
+            min-width: 320px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: var(--text-sm);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -445,6 +457,19 @@
             align-items: center;
             padding: var(--space-20) 0;
             overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: auto;
+                padding: calc(80px + var(--space-8)) 0 var(--space-16) 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: calc(70px + var(--space-6)) 0 var(--space-12) 0;
+            }
         }
 
         .hero-background {
