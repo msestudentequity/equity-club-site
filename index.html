@@ -11,6 +11,27 @@
     <meta name="keywords" content="student equity, leadership, diversity, inclusion">
     <meta name="theme-color" content="#2a6fdb">
     <style>
+        /* Dragging cursor affordance */
+.dragging {
+    cursor: grabbing !important;
+    cursor: -webkit-grabbing !important;
+}
+
+/* Optional: Style scrollbars */
+@media (max-width: 768px) {
+    .projects-grid::-webkit-scrollbar,
+    .hero-stats::-webkit-scrollbar,
+    .contact-content::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .projects-grid::-webkit-scrollbar-thumb,
+    .hero-stats::-webkit-scrollbar-thumb,
+    .contact-content::-webkit-scrollbar-thumb {
+        background: #2a6fdb;
+        border-radius: 3px;
+    }
+}
         /* CSS Variables & Root Configuration */
         :root {
             --primary: #2a6fdb;
@@ -872,6 +893,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: var(--space-8);
+            overflow-x: auto; /* allow horizontal scroll when content overflows */
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            scrollbar-gutter: stable;
         }
 
         @media (max-width: 768px) {
@@ -1295,6 +1320,37 @@
         .mt-8 {
             margin-top: var(--space-8);
         }
+
+        /* Horizontal scroll helper styles for small screens */
+        @media (max-width: 768px) {
+            .projects-grid {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                gap: var(--space-4);
+                padding-bottom: 12px;
+                scroll-snap-type: x mandatory;
+            }
+
+            .projects-grid .project-card {
+                min-width: 260px;
+                flex: 0 0 auto;
+                scroll-snap-align: start;
+            }
+
+            /* Slight visual hint for horizontal scrolling */
+            .projects-grid::after{
+                content: '';
+                flex: 0 0 16px;
+            }
+        }
+
+        /* Dragging cursor affordance */
+        .projects-grid.dragging {
+            cursor: grabbing;
+            cursor: -webkit-grabbing;
+        }
     </style>
 </head>
 <body>
@@ -1611,6 +1667,68 @@
     </button>
 
     <script>
+        // Horizontal scroll enhancements: translate vertical wheel and pointer drags into horizontal scroll
+(function(){
+    function enableHorizontalScroll(container){
+        if(!container) return;
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        // Wheel -> horizontal (for mouse wheel users)
+        container.addEventListener('wheel', (e) => {
+            // always translate a vertical wheel into horizontal movement for this container
+            if(e.deltaY === 0 && e.deltaX === 0) return;
+            e.preventDefault();
+            // sensitivity multiplier to make smaller wheel gestures pan further
+            const multiplier = 1.8;
+            container.scrollLeft += e.deltaY * multiplier;
+        }, { passive: false });
+
+        // Keyboard arrows when container is focused
+        container.setAttribute('tabindex', '0');
+        container.addEventListener('keydown', (e) => {
+            const step = 80; // pixels per arrow press
+            if(e.key === 'ArrowRight'){
+                container.scrollLeft += step; e.preventDefault();
+            } else if(e.key === 'ArrowLeft'){
+                container.scrollLeft -= step; e.preventDefault();
+            }
+        });
+
+        // Pointer / touch drag support
+        container.addEventListener('pointerdown', (e) => {
+            isDown = true;
+            container.setPointerCapture(e.pointerId);
+            startX = e.clientX;
+            scrollLeft = container.scrollLeft;
+            container.classList.add('dragging');
+        });
+
+        container.addEventListener('pointermove', (e) => {
+            if(!isDown) return;
+            const dx = startX - e.clientX;
+            container.scrollLeft = scrollLeft + dx;
+        });
+
+        function endDrag(e){
+            isDown = false;
+            try{ container.releasePointerCapture && container.releasePointerCapture(e?.pointerId); }catch(_){ }
+            container.classList.remove('dragging');
+        }
+
+        container.addEventListener('pointerup', endDrag);
+        container.addEventListener('pointercancel', endDrag);
+        container.addEventListener('pointerleave', endDrag);
+    }
+
+    // Initialize horizontal scroll on page load
+    document.addEventListener('DOMContentLoaded', ()=>{
+        // Add class names of elements you want horizontal scroll on
+        const horizontalContainers = document.querySelectorAll('.projects-grid, .hero-stats, .contact-content');
+        horizontalContainers.forEach(enableHorizontalScroll);
+    });
+})();
 document.addEventListener('DOMContentLoaded', () => {
     // HIDE PAGE LOADER WHEN ALL RESOURCES ARE LOADED
     const pageLoader = document.getElementById('page-loader');
@@ -1941,6 +2059,145 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Newsletter form uses `mailto:` fallback; no client-side interception to keep page informational.
 });
+
+// Horizontal scroll enhancements: translate vertical wheel and pointer drags into horizontal scroll
+(function(){
+    function enableHorizontalScroll(container){
+        if(!container) return;
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        // Wheel -> horizontal (for mouse wheel users)
+        container.addEventListener('wheel', (e) => {
+            // always translate a vertical wheel into horizontal movement for this container
+            if(e.deltaY === 0 && e.deltaX === 0) return;
+            e.preventDefault();
+            // sensitivity multiplier to make smaller wheel gestures pan further
+            const multiplier = 1.8;
+            container.scrollLeft += e.deltaY * multiplier;
+        }, { passive: false });
+
+        // Keyboard arrows when container is focused
+        container.setAttribute('tabindex', '0');
+        container.addEventListener('keydown', (e) => {
+            const step = 80; // pixels per arrow press
+            if(e.key === 'ArrowRight'){
+                container.scrollLeft += step; e.preventDefault();
+            } else if(e.key === 'ArrowLeft'){
+                container.scrollLeft -= step; e.preventDefault();
+            }
+        });
+
+        // Pointer / touch drag support
+        container.addEventListener('pointerdown', (e) => {
+            isDown = true;
+            container.setPointerCapture(e.pointerId);
+            startX = e.clientX;
+            scrollLeft = container.scrollLeft;
+            container.classList.add('dragging');
+        });
+
+        container.addEventListener('pointermove', (e) => {
+            if(!isDown) return;
+            const dx = startX - e.clientX;
+            container.scrollLeft = scrollLeft + dx;
+        });
+
+        function endDrag(e){
+            isDown = false;
+            try{ container.releasePointerCapture && container.releasePointerCapture(e?.pointerId); }catch(_){ }
+            container.classList.remove('dragging');
+        }
+
+        container.addEventListener('pointerup', endDrag);
+        container.addEventListener('pointercancel', endDrag);
+        container.addEventListener('pointerleave', endDrag);
+    }
+
+    // Enable on projects grid and any .horizontal-scroll
+    document.addEventListener('DOMContentLoaded', ()=>{
+        const horizontalContainers = Array.from(document.querySelectorAll('.projects-grid, .horizontal-scroll'));
+        horizontalContainers.forEach(enableHorizontalScroll);
+    });
+})();
     </script>
+
+<style>
+  /* Dragging affordance */
+  .dragging {
+    cursor: grabbing !important;
+    cursor: -webkit-grabbing !important;
+  }
+  /* Smooth horizontal scroll */
+  .h-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+  }
+  /* Hide vertical scrollbar, show small horizontal bar */
+  .h-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+  .h-scroll::-webkit-scrollbar-thumb {
+    background: #2a6fdb;
+    border-radius: 3px;
+  }
+</style>
+
+<script>
+(function(){
+  function enableHorizontalScroll(container){
+    if(!container) return;
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    // Wheel -> horizontal
+    container.addEventListener('wheel', (e) => {
+      if(e.deltaY === 0 && e.deltaX === 0) return;
+      e.preventDefault();
+      const multiplier = 1.8;
+      container.scrollLeft += e.deltaY * multiplier;
+    }, { passive: false });
+    // Keyboard arrows
+    container.setAttribute('tabindex', '0');
+    container.addEventListener('keydown', (e) => {
+      const step = 80;
+      if(e.key === 'ArrowRight'){
+        container.scrollLeft += step; e.preventDefault();
+      } else if(e.key === 'ArrowLeft'){
+        container.scrollLeft -= step; e.preventDefault();
+      }
+    });
+    // Pointer drag
+    container.addEventListener('pointerdown', (e) => {
+      isDown = true;
+      container.setPointerCapture(e.pointerId);
+      startX = e.clientX;
+      scrollLeft = container.scrollLeft;
+      container.classList.add('dragging');
+    });
+    container.addEventListener('pointermove', (e) => {
+      if(!isDown) return;
+      const dx = startX - e.clientX;
+      container.scrollLeft = scrollLeft + dx;
+    });
+    function endDrag(e){
+      isDown = false;
+      try{ container.releasePointerCapture(e.pointerId); }catch(_){}
+      container.classList.remove('dragging');
+    }
+    container.addEventListener('pointerup', endDrag);
+    container.addEventListener('pointercancel', endDrag);
+    container.addEventListener('pointerleave', endDrag);
+  }
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const horizontalContainers = document.querySelectorAll('.h-scroll');
+    horizontalContainers.forEach(enableHorizontalScroll);
+  });
+})();
+</script>
 </body>
 </html>
